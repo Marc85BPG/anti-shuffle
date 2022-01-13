@@ -1,4 +1,4 @@
-local isShuffling = false	-- please do not change this, it is internal to the script and not a config variable
+local isShuffling = false
 
 Citizen.CreateThread(function()
 	RegisterNetEvent('omgugly:toggleShuffle')
@@ -80,7 +80,7 @@ function areExemptKeysReleased()
 	if (#exemptKeys == 0) then return false end
 	local keys = 0
 	for i = 1, #exemptKeys do
-		if (IsControlReleased(0, exemptKeys[i])) and (IsInputDisabled(2)) and (not isDead) then keys = keys + 1 end
+		if (IsControlReleased(0, exemptKeys[i])) and GetLastInputMethod( 0 ) and (not isDead) then keys = keys + 1 end		--GamepadInputFix here
 	end
 	if (keys == #exemptKeys) then return true
 	else return false end
@@ -152,7 +152,7 @@ Citizen.CreateThread(function()
 			if (not GetPedConfigFlag(player, 184, 1)) then SetPedConfigFlag(player, 184, true) end
 			if (IsPedInAnyVehicle(player, false)) then
 				local v = GetVehiclePedIsIn(player, 0)
-				if (not areExemptKeysReleased()) then
+				if (not areExemptKeysReleased()) and GetLastInputMethod( 0 ) then							--GamepadInputFix here
 					if (GetPedConfigFlag(player, 184, 1)) then SetPedConfigFlag(player, 184, false) end
 					if (allowKeyShuffle) and (not isShuffling) then
 						local seatCurrent, seatTarget = getPedSeat(player, v), nil
@@ -180,7 +180,7 @@ Citizen.CreateThread(function()
 		else
 			if (GetPedConfigFlag(player, 184, 1)) then SetPedConfigFlag(player, 184, false) end
 		end
-		if (IsControlJustPressed(0, enterRearSeatKey)) and (IsInputDisabled(2)) then enterRearSeat(player) end
+		if (IsControlJustPressed(0, enterRearSeatKey)) and GetLastInputMethod( 0 ) then enterRearSeat(player) end		--GamepadInputFix here
 		Citizen.Wait(0)
 	end
 end)
